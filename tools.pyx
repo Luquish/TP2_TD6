@@ -108,3 +108,32 @@ def custom_one_hot_encoder_cython(list data, int delimiter=124):
         binary_matrix.append(binary_row)
 
     return unique_categories, binary_matrix
+
+def boolean_features_ohe_cython(list list_data, list unique_values):
+    """
+    Optimiza el one-hot encoding de listas de datos con Cython.
+    
+    Parámetros:
+    - list_data (list of lists): Listas de datos de las columnas a procesar.
+    - unique_values (list): Lista de valores únicos para el one-hot encoding.
+
+    Retorna:
+    - ohe_result (list of lists): Lista de listas con el resultado del one-hot encoding.
+    """
+    cdef int num_rows = len(list_data[0])  # Número de filas
+    cdef int num_columns = len(list_data)  # Número de columnas
+    
+    # Crear una lista de resultados con ceros
+    cdef list ohe_result = [[0] * len(unique_values) for _ in range(num_rows)]
+    cdef int i, j, k
+    
+    # Iterar sobre las filas
+    for i in range(num_rows):
+        for j in range(num_columns):
+            current_value = list_data[j][i]
+            if current_value in unique_values:
+                # Marcar la posición correspondiente como 1
+                k = unique_values.index(current_value)
+                ohe_result[i][k] = 1
+    
+    return ohe_result

@@ -1939,6 +1939,29 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
+/* PySequenceContains.proto */
+static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* seq, int eq) {
+    int result = PySequence_Contains(seq, item);
+    return unlikely(result < 0) ? result : (result == (eq == Py_EQ));
+}
+
+/* UnpackUnboundCMethod.proto */
+typedef struct {
+    PyObject *type;
+    PyObject **method_name;
+    PyCFunction func;
+    PyObject *method;
+    int flag;
+} __Pyx_CachedCFunction;
+
+/* CallUnboundCMethod1.proto */
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#else
+#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
+#endif
+
 /* IncludeStructmemberH.proto */
 #include <structmember.h>
 
@@ -2152,6 +2175,9 @@ static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 /* FormatTypeName.proto */
 #if CYTHON_COMPILING_IN_LIMITED_API
 typedef PyObject *__Pyx_TypeName;
@@ -2164,9 +2190,6 @@ typedef const char *__Pyx_TypeName;
 #define __Pyx_PyType_GetName(tp) ((tp)->tp_name)
 #define __Pyx_DECREF_TypeName(obj)
 #endif
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -2210,7 +2233,9 @@ static PyObject *__pyx_builtin_range;
 /* #### Code section: string_decls ### */
 static const char __pyx_k_i[] = "i";
 static const char __pyx_k_j[] = "j";
-static const char __pyx_k__5[] = "?";
+static const char __pyx_k_k[] = "k";
+static const char __pyx_k__5[] = "_";
+static const char __pyx_k__8[] = "?";
 static const char __pyx_k_NaN[] = "NaN";
 static const char __pyx_k_col[] = "col";
 static const char __pyx_k_key[] = "key";
@@ -2229,15 +2254,21 @@ static const char __pyx_k_n_cols[] = "n_cols";
 static const char __pyx_k_n_rows[] = "n_rows";
 static const char __pyx_k_umbral[] = "umbral";
 static const char __pyx_k_category[] = "category";
+static const char __pyx_k_num_rows[] = "num_rows";
 static const char __pyx_k_delimiter[] = "delimiter";
+static const char __pyx_k_list_data[] = "list_data";
 static const char __pyx_k_tools_pyx[] = "tools.pyx";
 static const char __pyx_k_binary_row[] = "binary_row";
 static const char __pyx_k_frecuencia[] = "frecuencia";
+static const char __pyx_k_ohe_result[] = "ohe_result";
 static const char __pyx_k_unique_set[] = "unique_set";
 static const char __pyx_k_Desconocido[] = "Desconocido";
+static const char __pyx_k_num_columns[] = "num_columns";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
 static const char __pyx_k_n_categories[] = "n_categories";
 static const char __pyx_k_binary_matrix[] = "binary_matrix";
+static const char __pyx_k_current_value[] = "current_value";
+static const char __pyx_k_unique_values[] = "unique_values";
 static const char __pyx_k_valor_pequeno[] = "valor_pequeno";
 static const char __pyx_k_categorias_set[] = "categorias_set";
 static const char __pyx_k_category_to_index[] = "category_to_index";
@@ -2249,10 +2280,13 @@ static const char __pyx_k_columns_to_exclude[] = "columns_to_exclude";
 static const char __pyx_k_categorias_pequenas[] = "categorias_pequenas";
 static const char __pyx_k_categorical_features[] = "categorical_features";
 static const char __pyx_k_agrupar_categorias_cython[] = "agrupar_categorias_cython";
+static const char __pyx_k_boolean_features_ohe_cython[] = "boolean_features_ohe_cython";
 static const char __pyx_k_custom_one_hot_encoder_cython[] = "custom_one_hot_encoder_cython";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_5tools_agrupar_categorias_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_categorical_features, CYTHON_UNUSED PyObject *__pyx_v_columns_to_exclude, PyObject *__pyx_v_data, int __pyx_v_umbral); /* proto */
 static PyObject *__pyx_pf_5tools_2custom_one_hot_encoder_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_data, CYTHON_UNUSED int __pyx_v_delimiter); /* proto */
+static PyObject *__pyx_pf_5tools_4boolean_features_ohe_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_list_data, PyObject *__pyx_v_unique_values); /* proto */
+static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_index = {0, 0, 0, 0, 0};
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 typedef struct {
@@ -2286,10 +2320,12 @@ typedef struct {
   PyObject *__pyx_n_s_NaN;
   PyObject *__pyx_n_s_Otro;
   PyObject *__pyx_n_s__5;
+  PyObject *__pyx_n_s__8;
   PyObject *__pyx_n_s_agrupar_categorias_cython;
   PyObject *__pyx_n_s_asyncio_coroutines;
   PyObject *__pyx_n_s_binary_matrix;
   PyObject *__pyx_n_s_binary_row;
+  PyObject *__pyx_n_s_boolean_features_ohe_cython;
   PyObject *__pyx_n_s_categorias_pequenas;
   PyObject *__pyx_n_s_categorias_set;
   PyObject *__pyx_n_s_categorical_features;
@@ -2298,6 +2334,7 @@ typedef struct {
   PyObject *__pyx_n_s_cline_in_traceback;
   PyObject *__pyx_n_s_col;
   PyObject *__pyx_n_s_columns_to_exclude;
+  PyObject *__pyx_n_s_current_value;
   PyObject *__pyx_n_s_custom_one_hot_encoder_cython;
   PyObject *__pyx_n_s_data;
   PyObject *__pyx_n_s_delimiter;
@@ -2307,12 +2344,17 @@ typedef struct {
   PyObject *__pyx_n_s_is_coroutine;
   PyObject *__pyx_n_s_items;
   PyObject *__pyx_n_s_j;
+  PyObject *__pyx_n_s_k;
   PyObject *__pyx_n_s_key;
+  PyObject *__pyx_n_s_list_data;
   PyObject *__pyx_n_s_main;
   PyObject *__pyx_n_s_n_categories;
   PyObject *__pyx_n_s_n_cols;
   PyObject *__pyx_n_s_n_rows;
   PyObject *__pyx_n_s_name;
+  PyObject *__pyx_n_s_num_columns;
+  PyObject *__pyx_n_s_num_rows;
+  PyObject *__pyx_n_s_ohe_result;
   PyObject *__pyx_n_s_range;
   PyObject *__pyx_n_s_row;
   PyObject *__pyx_n_s_test;
@@ -2321,6 +2363,7 @@ typedef struct {
   PyObject *__pyx_n_s_umbral;
   PyObject *__pyx_n_s_unique_categories;
   PyObject *__pyx_n_s_unique_set;
+  PyObject *__pyx_n_s_unique_values;
   PyObject *__pyx_n_s_valor_desconocido;
   PyObject *__pyx_n_s_valor_pequeno;
   PyObject *__pyx_n_s_value;
@@ -2328,8 +2371,10 @@ typedef struct {
   PyObject *__pyx_int_1;
   PyObject *__pyx_tuple_;
   PyObject *__pyx_tuple__3;
+  PyObject *__pyx_tuple__6;
   PyObject *__pyx_codeobj__2;
   PyObject *__pyx_codeobj__4;
+  PyObject *__pyx_codeobj__7;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2376,10 +2421,12 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_NaN);
   Py_CLEAR(clear_module_state->__pyx_n_s_Otro);
   Py_CLEAR(clear_module_state->__pyx_n_s__5);
+  Py_CLEAR(clear_module_state->__pyx_n_s__8);
   Py_CLEAR(clear_module_state->__pyx_n_s_agrupar_categorias_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
   Py_CLEAR(clear_module_state->__pyx_n_s_binary_matrix);
   Py_CLEAR(clear_module_state->__pyx_n_s_binary_row);
+  Py_CLEAR(clear_module_state->__pyx_n_s_boolean_features_ohe_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_categorias_pequenas);
   Py_CLEAR(clear_module_state->__pyx_n_s_categorias_set);
   Py_CLEAR(clear_module_state->__pyx_n_s_categorical_features);
@@ -2388,6 +2435,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
   Py_CLEAR(clear_module_state->__pyx_n_s_col);
   Py_CLEAR(clear_module_state->__pyx_n_s_columns_to_exclude);
+  Py_CLEAR(clear_module_state->__pyx_n_s_current_value);
   Py_CLEAR(clear_module_state->__pyx_n_s_custom_one_hot_encoder_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_data);
   Py_CLEAR(clear_module_state->__pyx_n_s_delimiter);
@@ -2397,12 +2445,17 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
   Py_CLEAR(clear_module_state->__pyx_n_s_items);
   Py_CLEAR(clear_module_state->__pyx_n_s_j);
+  Py_CLEAR(clear_module_state->__pyx_n_s_k);
   Py_CLEAR(clear_module_state->__pyx_n_s_key);
+  Py_CLEAR(clear_module_state->__pyx_n_s_list_data);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
   Py_CLEAR(clear_module_state->__pyx_n_s_n_categories);
   Py_CLEAR(clear_module_state->__pyx_n_s_n_cols);
   Py_CLEAR(clear_module_state->__pyx_n_s_n_rows);
   Py_CLEAR(clear_module_state->__pyx_n_s_name);
+  Py_CLEAR(clear_module_state->__pyx_n_s_num_columns);
+  Py_CLEAR(clear_module_state->__pyx_n_s_num_rows);
+  Py_CLEAR(clear_module_state->__pyx_n_s_ohe_result);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
   Py_CLEAR(clear_module_state->__pyx_n_s_row);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
@@ -2411,6 +2464,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_umbral);
   Py_CLEAR(clear_module_state->__pyx_n_s_unique_categories);
   Py_CLEAR(clear_module_state->__pyx_n_s_unique_set);
+  Py_CLEAR(clear_module_state->__pyx_n_s_unique_values);
   Py_CLEAR(clear_module_state->__pyx_n_s_valor_desconocido);
   Py_CLEAR(clear_module_state->__pyx_n_s_valor_pequeno);
   Py_CLEAR(clear_module_state->__pyx_n_s_value);
@@ -2418,8 +2472,10 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_int_1);
   Py_CLEAR(clear_module_state->__pyx_tuple_);
   Py_CLEAR(clear_module_state->__pyx_tuple__3);
+  Py_CLEAR(clear_module_state->__pyx_tuple__6);
   Py_CLEAR(clear_module_state->__pyx_codeobj__2);
   Py_CLEAR(clear_module_state->__pyx_codeobj__4);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__7);
   return 0;
 }
 #endif
@@ -2444,10 +2500,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_NaN);
   Py_VISIT(traverse_module_state->__pyx_n_s_Otro);
   Py_VISIT(traverse_module_state->__pyx_n_s__5);
+  Py_VISIT(traverse_module_state->__pyx_n_s__8);
   Py_VISIT(traverse_module_state->__pyx_n_s_agrupar_categorias_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
   Py_VISIT(traverse_module_state->__pyx_n_s_binary_matrix);
   Py_VISIT(traverse_module_state->__pyx_n_s_binary_row);
+  Py_VISIT(traverse_module_state->__pyx_n_s_boolean_features_ohe_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_categorias_pequenas);
   Py_VISIT(traverse_module_state->__pyx_n_s_categorias_set);
   Py_VISIT(traverse_module_state->__pyx_n_s_categorical_features);
@@ -2456,6 +2514,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
   Py_VISIT(traverse_module_state->__pyx_n_s_col);
   Py_VISIT(traverse_module_state->__pyx_n_s_columns_to_exclude);
+  Py_VISIT(traverse_module_state->__pyx_n_s_current_value);
   Py_VISIT(traverse_module_state->__pyx_n_s_custom_one_hot_encoder_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_data);
   Py_VISIT(traverse_module_state->__pyx_n_s_delimiter);
@@ -2465,12 +2524,17 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
   Py_VISIT(traverse_module_state->__pyx_n_s_items);
   Py_VISIT(traverse_module_state->__pyx_n_s_j);
+  Py_VISIT(traverse_module_state->__pyx_n_s_k);
   Py_VISIT(traverse_module_state->__pyx_n_s_key);
+  Py_VISIT(traverse_module_state->__pyx_n_s_list_data);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
   Py_VISIT(traverse_module_state->__pyx_n_s_n_categories);
   Py_VISIT(traverse_module_state->__pyx_n_s_n_cols);
   Py_VISIT(traverse_module_state->__pyx_n_s_n_rows);
   Py_VISIT(traverse_module_state->__pyx_n_s_name);
+  Py_VISIT(traverse_module_state->__pyx_n_s_num_columns);
+  Py_VISIT(traverse_module_state->__pyx_n_s_num_rows);
+  Py_VISIT(traverse_module_state->__pyx_n_s_ohe_result);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
   Py_VISIT(traverse_module_state->__pyx_n_s_row);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
@@ -2479,6 +2543,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_umbral);
   Py_VISIT(traverse_module_state->__pyx_n_s_unique_categories);
   Py_VISIT(traverse_module_state->__pyx_n_s_unique_set);
+  Py_VISIT(traverse_module_state->__pyx_n_s_unique_values);
   Py_VISIT(traverse_module_state->__pyx_n_s_valor_desconocido);
   Py_VISIT(traverse_module_state->__pyx_n_s_valor_pequeno);
   Py_VISIT(traverse_module_state->__pyx_n_s_value);
@@ -2486,8 +2551,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_int_1);
   Py_VISIT(traverse_module_state->__pyx_tuple_);
   Py_VISIT(traverse_module_state->__pyx_tuple__3);
+  Py_VISIT(traverse_module_state->__pyx_tuple__6);
   Py_VISIT(traverse_module_state->__pyx_codeobj__2);
   Py_VISIT(traverse_module_state->__pyx_codeobj__4);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__7);
   return 0;
 }
 #endif
@@ -2522,10 +2589,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_NaN __pyx_mstate_global->__pyx_n_s_NaN
 #define __pyx_n_s_Otro __pyx_mstate_global->__pyx_n_s_Otro
 #define __pyx_n_s__5 __pyx_mstate_global->__pyx_n_s__5
+#define __pyx_n_s__8 __pyx_mstate_global->__pyx_n_s__8
 #define __pyx_n_s_agrupar_categorias_cython __pyx_mstate_global->__pyx_n_s_agrupar_categorias_cython
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
 #define __pyx_n_s_binary_matrix __pyx_mstate_global->__pyx_n_s_binary_matrix
 #define __pyx_n_s_binary_row __pyx_mstate_global->__pyx_n_s_binary_row
+#define __pyx_n_s_boolean_features_ohe_cython __pyx_mstate_global->__pyx_n_s_boolean_features_ohe_cython
 #define __pyx_n_s_categorias_pequenas __pyx_mstate_global->__pyx_n_s_categorias_pequenas
 #define __pyx_n_s_categorias_set __pyx_mstate_global->__pyx_n_s_categorias_set
 #define __pyx_n_s_categorical_features __pyx_mstate_global->__pyx_n_s_categorical_features
@@ -2534,6 +2603,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
 #define __pyx_n_s_col __pyx_mstate_global->__pyx_n_s_col
 #define __pyx_n_s_columns_to_exclude __pyx_mstate_global->__pyx_n_s_columns_to_exclude
+#define __pyx_n_s_current_value __pyx_mstate_global->__pyx_n_s_current_value
 #define __pyx_n_s_custom_one_hot_encoder_cython __pyx_mstate_global->__pyx_n_s_custom_one_hot_encoder_cython
 #define __pyx_n_s_data __pyx_mstate_global->__pyx_n_s_data
 #define __pyx_n_s_delimiter __pyx_mstate_global->__pyx_n_s_delimiter
@@ -2543,12 +2613,17 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
 #define __pyx_n_s_items __pyx_mstate_global->__pyx_n_s_items
 #define __pyx_n_s_j __pyx_mstate_global->__pyx_n_s_j
+#define __pyx_n_s_k __pyx_mstate_global->__pyx_n_s_k
 #define __pyx_n_s_key __pyx_mstate_global->__pyx_n_s_key
+#define __pyx_n_s_list_data __pyx_mstate_global->__pyx_n_s_list_data
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
 #define __pyx_n_s_n_categories __pyx_mstate_global->__pyx_n_s_n_categories
 #define __pyx_n_s_n_cols __pyx_mstate_global->__pyx_n_s_n_cols
 #define __pyx_n_s_n_rows __pyx_mstate_global->__pyx_n_s_n_rows
 #define __pyx_n_s_name __pyx_mstate_global->__pyx_n_s_name
+#define __pyx_n_s_num_columns __pyx_mstate_global->__pyx_n_s_num_columns
+#define __pyx_n_s_num_rows __pyx_mstate_global->__pyx_n_s_num_rows
+#define __pyx_n_s_ohe_result __pyx_mstate_global->__pyx_n_s_ohe_result
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
 #define __pyx_n_s_row __pyx_mstate_global->__pyx_n_s_row
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
@@ -2557,6 +2632,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_umbral __pyx_mstate_global->__pyx_n_s_umbral
 #define __pyx_n_s_unique_categories __pyx_mstate_global->__pyx_n_s_unique_categories
 #define __pyx_n_s_unique_set __pyx_mstate_global->__pyx_n_s_unique_set
+#define __pyx_n_s_unique_values __pyx_mstate_global->__pyx_n_s_unique_values
 #define __pyx_n_s_valor_desconocido __pyx_mstate_global->__pyx_n_s_valor_desconocido
 #define __pyx_n_s_valor_pequeno __pyx_mstate_global->__pyx_n_s_valor_pequeno
 #define __pyx_n_s_value __pyx_mstate_global->__pyx_n_s_value
@@ -2564,8 +2640,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
 #define __pyx_tuple_ __pyx_mstate_global->__pyx_tuple_
 #define __pyx_tuple__3 __pyx_mstate_global->__pyx_tuple__3
+#define __pyx_tuple__6 __pyx_mstate_global->__pyx_tuple__6
 #define __pyx_codeobj__2 __pyx_mstate_global->__pyx_codeobj__2
 #define __pyx_codeobj__4 __pyx_mstate_global->__pyx_codeobj__4
+#define __pyx_codeobj__7 __pyx_mstate_global->__pyx_codeobj__7
 /* #### Code section: module_code ### */
 
 /* "tools.pyx":4
@@ -3715,6 +3793,8 @@ static PyObject *__pyx_pf_5tools_2custom_one_hot_encoder_cython(CYTHON_UNUSED Py
  *         binary_matrix.append(binary_row)
  * 
  *     return unique_categories, binary_matrix             # <<<<<<<<<<<<<<
+ * 
+ * def boolean_features_ohe_cython(list list_data, list unique_values):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
@@ -3757,6 +3837,340 @@ static PyObject *__pyx_pf_5tools_2custom_one_hot_encoder_cython(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
+/* "tools.pyx":112
+ *     return unique_categories, binary_matrix
+ * 
+ * def boolean_features_ohe_cython(list list_data, list unique_values):             # <<<<<<<<<<<<<<
+ *     """
+ *     Optimiza el one-hot encoding de listas de datos con Cython.
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5tools_5boolean_features_ohe_cython(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_5tools_4boolean_features_ohe_cython, "\n    Optimiza el one-hot encoding de listas de datos con Cython.\n    \n    Par\303\241metros:\n    - list_data (list of lists): Listas de datos de las columnas a procesar.\n    - unique_values (list): Lista de valores \303\272nicos para el one-hot encoding.\n\n    Retorna:\n    - ohe_result (list of lists): Lista de listas con el resultado del one-hot encoding.\n    ");
+static PyMethodDef __pyx_mdef_5tools_5boolean_features_ohe_cython = {"boolean_features_ohe_cython", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5tools_5boolean_features_ohe_cython, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5tools_4boolean_features_ohe_cython};
+static PyObject *__pyx_pw_5tools_5boolean_features_ohe_cython(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_list_data = 0;
+  PyObject *__pyx_v_unique_values = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[2] = {0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("boolean_features_ohe_cython (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_MACROS
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_list_data,&__pyx_n_s_unique_values,0};
+    if (__pyx_kwds) {
+      Py_ssize_t kw_args;
+      switch (__pyx_nargs) {
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+      switch (__pyx_nargs) {
+        case  0:
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_list_data)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_unique_values)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 112, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("boolean_features_ohe_cython", 1, 2, 2, 1); __PYX_ERR(0, 112, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        const Py_ssize_t kwd_pos_args = __pyx_nargs;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "boolean_features_ohe_cython") < 0)) __PYX_ERR(0, 112, __pyx_L3_error)
+      }
+    } else if (unlikely(__pyx_nargs != 2)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+    }
+    __pyx_v_list_data = ((PyObject*)values[0]);
+    __pyx_v_unique_values = ((PyObject*)values[1]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("boolean_features_ohe_cython", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 112, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_AddTraceback("tools.boolean_features_ohe_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_list_data), (&PyList_Type), 1, "list_data", 1))) __PYX_ERR(0, 112, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_unique_values), (&PyList_Type), 1, "unique_values", 1))) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5tools_4boolean_features_ohe_cython(__pyx_self, __pyx_v_list_data, __pyx_v_unique_values);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5tools_4boolean_features_ohe_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_list_data, PyObject *__pyx_v_unique_values) {
+  int __pyx_v_num_rows;
+  int __pyx_v_num_columns;
+  PyObject *__pyx_v_ohe_result = 0;
+  int __pyx_v_i;
+  int __pyx_v_j;
+  int __pyx_v_k;
+  PyObject *__pyx_v_current_value = NULL;
+  CYTHON_UNUSED int __pyx_8genexpr1__pyx_v__;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("boolean_features_ohe_cython", 1);
+
+  /* "tools.pyx":123
+ *     - ohe_result (list of lists): Lista de listas con el resultado del one-hot encoding.
+ *     """
+ *     cdef int num_rows = len(list_data[0])  # Nmero de filas             # <<<<<<<<<<<<<<
+ *     cdef int num_columns = len(list_data)  # Nmero de columnas
+ * 
+ */
+  if (unlikely(__pyx_v_list_data == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 123, __pyx_L1_error)
+  }
+  __pyx_t_1 = PyList_GET_ITEM(__pyx_v_list_data, 0);
+  __Pyx_INCREF(__pyx_t_1);
+  __pyx_t_2 = PyObject_Length(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 123, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_num_rows = __pyx_t_2;
+
+  /* "tools.pyx":124
+ *     """
+ *     cdef int num_rows = len(list_data[0])  # Nmero de filas
+ *     cdef int num_columns = len(list_data)  # Nmero de columnas             # <<<<<<<<<<<<<<
+ * 
+ *     # Crear una lista de resultados con ceros
+ */
+  if (unlikely(__pyx_v_list_data == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 124, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_list_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_v_num_columns = __pyx_t_2;
+
+  /* "tools.pyx":127
+ * 
+ *     # Crear una lista de resultados con ceros
+ *     cdef list ohe_result = [[0] * len(unique_values) for _ in range(num_rows)]             # <<<<<<<<<<<<<<
+ *     cdef int i, j, k
+ * 
+ */
+  { /* enter inner scope */
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = __pyx_v_num_rows;
+    __pyx_t_4 = __pyx_t_3;
+    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+      __pyx_8genexpr1__pyx_v__ = __pyx_t_5;
+      if (unlikely(__pyx_v_unique_values == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+        __PYX_ERR(0, 127, __pyx_L1_error)
+      }
+      __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_unique_values); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 127, __pyx_L1_error)
+      __pyx_t_6 = PyList_New(1 * ((__pyx_t_2<0) ? 0:__pyx_t_2)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 127, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      { Py_ssize_t __pyx_temp;
+        for (__pyx_temp=0; __pyx_temp < __pyx_t_2; __pyx_temp++) {
+          __Pyx_INCREF(__pyx_int_0);
+          __Pyx_GIVEREF(__pyx_int_0);
+          if (__Pyx_PyList_SET_ITEM(__pyx_t_6, __pyx_temp, __pyx_int_0)) __PYX_ERR(0, 127, __pyx_L1_error);
+        }
+      }
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 127, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    }
+  } /* exit inner scope */
+  __pyx_v_ohe_result = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "tools.pyx":131
+ * 
+ *     # Iterar sobre las filas
+ *     for i in range(num_rows):             # <<<<<<<<<<<<<<
+ *         for j in range(num_columns):
+ *             current_value = list_data[j][i]
+ */
+  __pyx_t_3 = __pyx_v_num_rows;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+    __pyx_v_i = __pyx_t_5;
+
+    /* "tools.pyx":132
+ *     # Iterar sobre las filas
+ *     for i in range(num_rows):
+ *         for j in range(num_columns):             # <<<<<<<<<<<<<<
+ *             current_value = list_data[j][i]
+ *             if current_value in unique_values:
+ */
+    __pyx_t_7 = __pyx_v_num_columns;
+    __pyx_t_8 = __pyx_t_7;
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+      __pyx_v_j = __pyx_t_9;
+
+      /* "tools.pyx":133
+ *     for i in range(num_rows):
+ *         for j in range(num_columns):
+ *             current_value = list_data[j][i]             # <<<<<<<<<<<<<<
+ *             if current_value in unique_values:
+ *                 # Marcar la posicin correspondiente como 1
+ */
+      if (unlikely(__pyx_v_list_data == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 133, __pyx_L1_error)
+      }
+      __pyx_t_1 = __Pyx_GetItemInt(PyList_GET_ITEM(__pyx_v_list_data, __pyx_v_j), __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_XDECREF_SET(__pyx_v_current_value, __pyx_t_1);
+      __pyx_t_1 = 0;
+
+      /* "tools.pyx":134
+ *         for j in range(num_columns):
+ *             current_value = list_data[j][i]
+ *             if current_value in unique_values:             # <<<<<<<<<<<<<<
+ *                 # Marcar la posicin correspondiente como 1
+ *                 k = unique_values.index(current_value)
+ */
+      __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_v_current_value, __pyx_v_unique_values, Py_EQ)); if (unlikely((__pyx_t_10 < 0))) __PYX_ERR(0, 134, __pyx_L1_error)
+      if (__pyx_t_10) {
+
+        /* "tools.pyx":136
+ *             if current_value in unique_values:
+ *                 # Marcar la posicin correspondiente como 1
+ *                 k = unique_values.index(current_value)             # <<<<<<<<<<<<<<
+ *                 ohe_result[i][k] = 1
+ * 
+ */
+        __pyx_t_1 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyList_Type_index, __pyx_v_unique_values, __pyx_v_current_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 136, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_v_k = __pyx_t_11;
+
+        /* "tools.pyx":137
+ *                 # Marcar la posicin correspondiente como 1
+ *                 k = unique_values.index(current_value)
+ *                 ohe_result[i][k] = 1             # <<<<<<<<<<<<<<
+ * 
+ *     return ohe_result
+ */
+        if (unlikely((__Pyx_SetItemInt(PyList_GET_ITEM(__pyx_v_ohe_result, __pyx_v_i), __pyx_v_k, __pyx_int_1, int, 1, __Pyx_PyInt_From_int, 0, 0, 0) < 0))) __PYX_ERR(0, 137, __pyx_L1_error)
+
+        /* "tools.pyx":134
+ *         for j in range(num_columns):
+ *             current_value = list_data[j][i]
+ *             if current_value in unique_values:             # <<<<<<<<<<<<<<
+ *                 # Marcar la posicin correspondiente como 1
+ *                 k = unique_values.index(current_value)
+ */
+      }
+    }
+  }
+
+  /* "tools.pyx":139
+ *                 ohe_result[i][k] = 1
+ * 
+ *     return ohe_result             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_ohe_result);
+  __pyx_r = __pyx_v_ohe_result;
+  goto __pyx_L0;
+
+  /* "tools.pyx":112
+ *     return unique_categories, binary_matrix
+ * 
+ * def boolean_features_ohe_cython(list list_data, list unique_values):             # <<<<<<<<<<<<<<
+ *     """
+ *     Optimiza el one-hot encoding de listas de datos con Cython.
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("tools.boolean_features_ohe_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_ohe_result);
+  __Pyx_XDECREF(__pyx_v_current_value);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -3777,10 +4191,12 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_NaN, __pyx_k_NaN, sizeof(__pyx_k_NaN), 0, 0, 1, 1},
     {&__pyx_n_s_Otro, __pyx_k_Otro, sizeof(__pyx_k_Otro), 0, 0, 1, 1},
     {&__pyx_n_s__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 0, 1, 1},
+    {&__pyx_n_s__8, __pyx_k__8, sizeof(__pyx_k__8), 0, 0, 1, 1},
     {&__pyx_n_s_agrupar_categorias_cython, __pyx_k_agrupar_categorias_cython, sizeof(__pyx_k_agrupar_categorias_cython), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
     {&__pyx_n_s_binary_matrix, __pyx_k_binary_matrix, sizeof(__pyx_k_binary_matrix), 0, 0, 1, 1},
     {&__pyx_n_s_binary_row, __pyx_k_binary_row, sizeof(__pyx_k_binary_row), 0, 0, 1, 1},
+    {&__pyx_n_s_boolean_features_ohe_cython, __pyx_k_boolean_features_ohe_cython, sizeof(__pyx_k_boolean_features_ohe_cython), 0, 0, 1, 1},
     {&__pyx_n_s_categorias_pequenas, __pyx_k_categorias_pequenas, sizeof(__pyx_k_categorias_pequenas), 0, 0, 1, 1},
     {&__pyx_n_s_categorias_set, __pyx_k_categorias_set, sizeof(__pyx_k_categorias_set), 0, 0, 1, 1},
     {&__pyx_n_s_categorical_features, __pyx_k_categorical_features, sizeof(__pyx_k_categorical_features), 0, 0, 1, 1},
@@ -3789,6 +4205,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
     {&__pyx_n_s_col, __pyx_k_col, sizeof(__pyx_k_col), 0, 0, 1, 1},
     {&__pyx_n_s_columns_to_exclude, __pyx_k_columns_to_exclude, sizeof(__pyx_k_columns_to_exclude), 0, 0, 1, 1},
+    {&__pyx_n_s_current_value, __pyx_k_current_value, sizeof(__pyx_k_current_value), 0, 0, 1, 1},
     {&__pyx_n_s_custom_one_hot_encoder_cython, __pyx_k_custom_one_hot_encoder_cython, sizeof(__pyx_k_custom_one_hot_encoder_cython), 0, 0, 1, 1},
     {&__pyx_n_s_data, __pyx_k_data, sizeof(__pyx_k_data), 0, 0, 1, 1},
     {&__pyx_n_s_delimiter, __pyx_k_delimiter, sizeof(__pyx_k_delimiter), 0, 0, 1, 1},
@@ -3798,12 +4215,17 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
     {&__pyx_n_s_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 0, 1, 1},
     {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
+    {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
     {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
+    {&__pyx_n_s_list_data, __pyx_k_list_data, sizeof(__pyx_k_list_data), 0, 0, 1, 1},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
     {&__pyx_n_s_n_categories, __pyx_k_n_categories, sizeof(__pyx_k_n_categories), 0, 0, 1, 1},
     {&__pyx_n_s_n_cols, __pyx_k_n_cols, sizeof(__pyx_k_n_cols), 0, 0, 1, 1},
     {&__pyx_n_s_n_rows, __pyx_k_n_rows, sizeof(__pyx_k_n_rows), 0, 0, 1, 1},
     {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
+    {&__pyx_n_s_num_columns, __pyx_k_num_columns, sizeof(__pyx_k_num_columns), 0, 0, 1, 1},
+    {&__pyx_n_s_num_rows, __pyx_k_num_rows, sizeof(__pyx_k_num_rows), 0, 0, 1, 1},
+    {&__pyx_n_s_ohe_result, __pyx_k_ohe_result, sizeof(__pyx_k_ohe_result), 0, 0, 1, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
     {&__pyx_n_s_row, __pyx_k_row, sizeof(__pyx_k_row), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
@@ -3812,6 +4234,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_umbral, __pyx_k_umbral, sizeof(__pyx_k_umbral), 0, 0, 1, 1},
     {&__pyx_n_s_unique_categories, __pyx_k_unique_categories, sizeof(__pyx_k_unique_categories), 0, 0, 1, 1},
     {&__pyx_n_s_unique_set, __pyx_k_unique_set, sizeof(__pyx_k_unique_set), 0, 0, 1, 1},
+    {&__pyx_n_s_unique_values, __pyx_k_unique_values, sizeof(__pyx_k_unique_values), 0, 0, 1, 1},
     {&__pyx_n_s_valor_desconocido, __pyx_k_valor_desconocido, sizeof(__pyx_k_valor_desconocido), 0, 0, 1, 1},
     {&__pyx_n_s_valor_pequeno, __pyx_k_valor_pequeno, sizeof(__pyx_k_valor_pequeno), 0, 0, 1, 1},
     {&__pyx_n_s_value, __pyx_k_value, sizeof(__pyx_k_value), 0, 0, 1, 1},
@@ -3855,6 +4278,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
   __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tools_pyx, __pyx_n_s_custom_one_hot_encoder_cython, 59, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 59, __pyx_L1_error)
+
+  /* "tools.pyx":112
+ *     return unique_categories, binary_matrix
+ * 
+ * def boolean_features_ohe_cython(list list_data, list unique_values):             # <<<<<<<<<<<<<<
+ *     """
+ *     Optimiza el one-hot encoding de listas de datos con Cython.
+ */
+  __pyx_tuple__6 = PyTuple_Pack(10, __pyx_n_s_list_data, __pyx_n_s_unique_values, __pyx_n_s_num_rows, __pyx_n_s_num_columns, __pyx_n_s_ohe_result, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_current_value, __pyx_n_s__5); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tools_pyx, __pyx_n_s_boolean_features_ohe_cython, 112, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3864,6 +4299,8 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 /* #### Code section: init_constants ### */
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
+  __pyx_umethod_PyList_Type_index.type = (PyObject*)&PyList_Type;
+  __pyx_umethod_PyList_Type_index.method_name = &__pyx_n_s_index;
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -4261,6 +4698,18 @@ if (!__Pyx_RefNanny) {
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_custom_one_hot_encoder_cython, __pyx_t_2) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "tools.pyx":112
+ *     return unique_categories, binary_matrix
+ * 
+ * def boolean_features_ohe_cython(list list_data, list unique_values):             # <<<<<<<<<<<<<<
+ *     """
+ *     Optimiza el one-hot encoding de listas de datos con Cython.
+ */
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5tools_5boolean_features_ohe_cython, 0, __pyx_n_s_boolean_features_ohe_cython, NULL, __pyx_n_s_tools, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_boolean_features_ohe_cython, __pyx_t_2) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "tools.pyx":1
@@ -5920,6 +6369,120 @@ __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
                  expected, obj_type_name);
     __Pyx_DECREF_TypeName(obj_type_name);
     return 0;
+}
+
+/* UnpackUnboundCMethod */
+static PyObject *__Pyx_SelflessCall(PyObject *method, PyObject *args, PyObject *kwargs) {
+    PyObject *result;
+    PyObject *selfless_args = PyTuple_GetSlice(args, 1, PyTuple_Size(args));
+    if (unlikely(!selfless_args)) return NULL;
+    result = PyObject_Call(method, selfless_args, kwargs);
+    Py_DECREF(selfless_args);
+    return result;
+}
+static PyMethodDef __Pyx_UnboundCMethod_Def = {
+     "CythonUnboundCMethod",
+     __PYX_REINTERPRET_FUNCION(PyCFunction, __Pyx_SelflessCall),
+     METH_VARARGS | METH_KEYWORDS,
+     NULL
+};
+static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
+    PyObject *method;
+    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
+    if (unlikely(!method))
+        return -1;
+    target->method = method;
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION >= 3
+    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
+    #else
+    if (likely(!__Pyx_CyOrPyCFunction_Check(method)))
+    #endif
+    {
+        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
+        target->func = descr->d_method->ml_meth;
+        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
+    } else
+#endif
+#if CYTHON_COMPILING_IN_PYPY
+#else
+    if (PyCFunction_Check(method))
+#endif
+    {
+        PyObject *self;
+        int self_found;
+#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
+        self = PyObject_GetAttrString(method, "__self__");
+        if (!self) {
+            PyErr_Clear();
+        }
+#else
+        self = PyCFunction_GET_SELF(method);
+#endif
+        self_found = (self && self != Py_None);
+#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
+        Py_XDECREF(self);
+#endif
+        if (self_found) {
+            PyObject *unbound_method = PyCFunction_New(&__Pyx_UnboundCMethod_Def, method);
+            if (unlikely(!unbound_method)) return -1;
+            Py_DECREF(method);
+            target->method = unbound_method;
+        }
+    }
+    return 0;
+}
+
+/* CallUnboundCMethod1 */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
+    if (likely(cfunc->func)) {
+        int flag = cfunc->flag;
+        if (flag == METH_O) {
+            return (*(cfunc->func))(self, arg);
+        } else if ((PY_VERSION_HEX >= 0x030600B1) && flag == METH_FASTCALL) {
+            #if PY_VERSION_HEX >= 0x030700A0
+                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
+            #else
+                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+            #endif
+        } else if ((PY_VERSION_HEX >= 0x030700A0) && flag == (METH_FASTCALL | METH_KEYWORDS)) {
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+        }
+    }
+    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
+}
+#endif
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
+        args = PyTuple_New(1);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 0, arg);
+        if (cfunc->flag & METH_KEYWORDS)
+            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
+        else
+            result = (*cfunc->func)(self, args);
+    } else {
+        args = PyTuple_New(2);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(self);
+        PyTuple_SET_ITEM(args, 0, self);
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 1, arg);
+        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    }
+#else
+    args = PyTuple_Pack(2, self, arg);
+    if (unlikely(!args)) goto bad;
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+#endif
+bad:
+    Py_XDECREF(args);
+    return result;
 }
 
 /* FixUpExtensionType */
@@ -7878,22 +8441,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     }
 }
 
-/* FormatTypeName */
-#if CYTHON_COMPILING_IN_LIMITED_API
-static __Pyx_TypeName
-__Pyx_PyType_GetName(PyTypeObject* tp)
-{
-    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
-                                               __pyx_n_s_name);
-    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
-        PyErr_Clear();
-        Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__5);
-    }
-    return name;
-}
-#endif
-
 /* CIntToPy */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -7964,6 +8511,22 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #endif
     }
 }
+
+/* FormatTypeName */
+#if CYTHON_COMPILING_IN_LIMITED_API
+static __Pyx_TypeName
+__Pyx_PyType_GetName(PyTypeObject* tp)
+{
+    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
+                                               __pyx_n_s_name);
+    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
+        PyErr_Clear();
+        Py_XDECREF(name);
+        name = __Pyx_NewRef(__pyx_n_s__8);
+    }
+    return name;
+}
+#endif
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
