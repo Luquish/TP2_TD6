@@ -1,6 +1,8 @@
 # tools.pyx
 # cython: boundscheck=False, wraparound=False, nonecheck=False, cdivision=True
 
+from libc.time cimport time, strftime
+
 def agrupar_categorias_cython(list categorical_features, list columns_to_exclude, list data, int umbral=100):
     """
     Agrupa categorías raras en 'Otro' y reemplaza NaN por 'Desconocido' usando Cython para mejorar el rendimiento.
@@ -137,3 +139,80 @@ def boolean_features_ohe_cython(list list_data, list unique_values):
                 ohe_result[i][k] = 1
     
     return ohe_result
+
+def verificar_festividades_cython(list auction_times):
+    """
+    Verifica si una lista de fechas de subastas está cerca de una festividad importante sin utilizar pandas.
+    
+    Parámetros:
+    - auction_times (list): Lista de fechas de subasta como tuplas de formato (año, mes, día).
+
+    Retorna:
+    - (list): Lista de 1 o 0 indicando si la fecha está cerca de una festividad importante.
+    """
+    cdef int n = len(auction_times)
+    cdef int i, year, month, day
+    cdef list resultado = [0] * n
+
+    # Definir las festividades globales
+    cdef list festividades = [
+        (12, 25),  # Navidad
+        (12, 31),  # Fin de Año
+        (1, 6),    # Reyes Magos
+        (2, 14),   # San Valentín
+        (11, 29),  # Black Friday
+        (12, 2),   # Cyber Monday
+        (10, 31),  # Halloween
+        (4, 1),    # Pascua ajustada
+        (5, 12),   # Día de la Madre
+        (6, 16),   # Día del Padre
+        (8, 11)    # Día del Niño
+    ]
+
+    for i in range(n):
+        year, month, day = auction_times[i]
+
+        for fest_month, fest_day in festividades:
+            # Verificar si la subasta está dentro de los 10 días previos a la festividad
+            if month == fest_month and (fest_day - 10) <= day <= fest_day:
+                resultado[i] = 1
+                break  # Salimos del loop al encontrar una festividad cercana
+            # Caso especial para Reyes Magos (enero después de diciembre)
+            elif month == 12 and fest_month == 1 and day >= 22:
+                resultado[i] = 1
+                break
+
+    return resultado
+
+def agrupar_edades_cython(list edades):
+    """
+    Agrupa las edades en rangos numéricos para mejorar la predicción usando Cython.
+
+    Parámetros:
+    - edades (list): Lista de edades.
+
+    Retorna:
+    - age_groups (list): Lista con los rangos de edad.
+    """
+    cdef int n = len(edades)
+    cdef int i
+    cdef float edad
+    cdef list age_groups = [0] * n
+    
+    for i in range(n):
+        edad = edades[i]
+        
+        if edad < 0 or edad > 100:
+            age_groups[i] = 0  # Atípico
+        elif 0 <= edad <= 18:
+            age_groups[i] = 1  # Niños/Adolescentes
+        elif 19 <= edad <= 29:
+            age_groups[i] = 2  # Jóvenes Adultos
+        elif 30 <= edad <= 45:
+            age_groups[i] = 3  # Adultos
+        elif 46 <= edad <= 60:
+            age_groups[i] = 4  # Adultos Mayores
+        else:
+            age_groups[i] = 5  # Personas Mayores (61-100)
+    
+    return age_groups
