@@ -1976,6 +1976,15 @@ static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, long int
 /* PyIntCompare.proto */
 static CYTHON_INLINE int __Pyx_PyInt_BoolEqObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
 
+/* PyObjectCall2Args.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2);
+
+/* PyObjectCallMethod1.proto */
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
+
+/* append.proto */
+static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x);
+
 /* IncludeStructmemberH.proto */
 #include <structmember.h>
 
@@ -2255,7 +2264,7 @@ static const char __pyx_k_k[] = "k";
 static const char __pyx_k_n[] = "n";
 static const char __pyx_k_NaN[] = "NaN";
 static const char __pyx_k__16[] = "_";
-static const char __pyx_k__23[] = "?";
+static const char __pyx_k__25[] = "?";
 static const char __pyx_k_col[] = "col";
 static const char __pyx_k_day[] = "day";
 static const char __pyx_k_key[] = "key";
@@ -2273,10 +2282,12 @@ static const char __pyx_k_month[] = "month";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_tools[] = "tools";
 static const char __pyx_k_value[] = "value";
+static const char __pyx_k_append[] = "append";
 static const char __pyx_k_edades[] = "edades";
 static const char __pyx_k_n_cols[] = "n_cols";
 static const char __pyx_k_n_rows[] = "n_rows";
 static const char __pyx_k_umbral[] = "umbral";
+static const char __pyx_k_col_idx[] = "col_idx";
 static const char __pyx_k_category[] = "category";
 static const char __pyx_k_fest_day[] = "fest_day";
 static const char __pyx_k_num_rows[] = "num_rows";
@@ -2295,12 +2306,15 @@ static const char __pyx_k_num_columns[] = "num_columns";
 static const char __pyx_k_festividades[] = "festividades";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
 static const char __pyx_k_n_categories[] = "n_categories";
+static const char __pyx_k_action_list_0[] = "action_list_0";
 static const char __pyx_k_auction_times[] = "auction_times";
 static const char __pyx_k_binary_matrix[] = "binary_matrix";
 static const char __pyx_k_current_value[] = "current_value";
 static const char __pyx_k_unique_values[] = "unique_values";
 static const char __pyx_k_valor_pequeno[] = "valor_pequeno";
 static const char __pyx_k_categorias_set[] = "categorias_set";
+static const char __pyx_k_current_matrix[] = "current_matrix";
+static const char __pyx_k_existing_columns[] = "existing_columns";
 static const char __pyx_k_category_to_index[] = "category_to_index";
 static const char __pyx_k_unique_categories[] = "unique_categories";
 static const char __pyx_k_valor_desconocido[] = "valor_desconocido";
@@ -2312,6 +2326,7 @@ static const char __pyx_k_categorical_features[] = "categorical_features";
 static const char __pyx_k_agrupar_edades_cython[] = "agrupar_edades_cython";
 static const char __pyx_k_agrupar_categorias_cython[] = "agrupar_categorias_cython";
 static const char __pyx_k_boolean_features_ohe_cython[] = "boolean_features_ohe_cython";
+static const char __pyx_k_expand_action_list_0_cython[] = "expand_action_list_0_cython";
 static const char __pyx_k_custom_one_hot_encoder_cython[] = "custom_one_hot_encoder_cython";
 static const char __pyx_k_verificar_festividades_cython[] = "verificar_festividades_cython";
 /* #### Code section: decls ### */
@@ -2320,6 +2335,7 @@ static PyObject *__pyx_pf_5tools_2custom_one_hot_encoder_cython(CYTHON_UNUSED Py
 static PyObject *__pyx_pf_5tools_4boolean_features_ohe_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_list_data, PyObject *__pyx_v_unique_values); /* proto */
 static PyObject *__pyx_pf_5tools_6verificar_festividades_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_auction_times); /* proto */
 static PyObject *__pyx_pf_5tools_8agrupar_edades_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_edades); /* proto */
+static PyObject *__pyx_pf_5tools_10expand_action_list_0_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_action_list_0, PyObject *__pyx_v_existing_columns, PyObject *__pyx_v_current_matrix); /* proto */
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_index = {0, 0, 0, 0, 0};
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
@@ -2358,10 +2374,12 @@ typedef struct {
   PyObject *__pyx_n_s_NaN;
   PyObject *__pyx_n_s_Otro;
   PyObject *__pyx_n_s__16;
-  PyObject *__pyx_n_s__23;
+  PyObject *__pyx_n_s__25;
+  PyObject *__pyx_n_s_action_list_0;
   PyObject *__pyx_n_s_age_groups;
   PyObject *__pyx_n_s_agrupar_categorias_cython;
   PyObject *__pyx_n_s_agrupar_edades_cython;
+  PyObject *__pyx_n_s_append;
   PyObject *__pyx_n_s_asyncio_coroutines;
   PyObject *__pyx_n_s_auction_times;
   PyObject *__pyx_n_s_binary_matrix;
@@ -2374,7 +2392,9 @@ typedef struct {
   PyObject *__pyx_n_s_category_to_index;
   PyObject *__pyx_n_s_cline_in_traceback;
   PyObject *__pyx_n_s_col;
+  PyObject *__pyx_n_s_col_idx;
   PyObject *__pyx_n_s_columns_to_exclude;
+  PyObject *__pyx_n_s_current_matrix;
   PyObject *__pyx_n_s_current_value;
   PyObject *__pyx_n_s_custom_one_hot_encoder_cython;
   PyObject *__pyx_n_s_data;
@@ -2382,6 +2402,8 @@ typedef struct {
   PyObject *__pyx_n_s_delimiter;
   PyObject *__pyx_n_s_edad;
   PyObject *__pyx_n_s_edades;
+  PyObject *__pyx_n_s_existing_columns;
+  PyObject *__pyx_n_s_expand_action_list_0_cython;
   PyObject *__pyx_n_s_fest_day;
   PyObject *__pyx_n_s_fest_month;
   PyObject *__pyx_n_s_festividades;
@@ -2451,11 +2473,13 @@ typedef struct {
   PyObject *__pyx_tuple__17;
   PyObject *__pyx_tuple__19;
   PyObject *__pyx_tuple__21;
+  PyObject *__pyx_tuple__23;
   PyObject *__pyx_codeobj__13;
   PyObject *__pyx_codeobj__15;
   PyObject *__pyx_codeobj__18;
   PyObject *__pyx_codeobj__20;
   PyObject *__pyx_codeobj__22;
+  PyObject *__pyx_codeobj__24;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2502,10 +2526,12 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_NaN);
   Py_CLEAR(clear_module_state->__pyx_n_s_Otro);
   Py_CLEAR(clear_module_state->__pyx_n_s__16);
-  Py_CLEAR(clear_module_state->__pyx_n_s__23);
+  Py_CLEAR(clear_module_state->__pyx_n_s__25);
+  Py_CLEAR(clear_module_state->__pyx_n_s_action_list_0);
   Py_CLEAR(clear_module_state->__pyx_n_s_age_groups);
   Py_CLEAR(clear_module_state->__pyx_n_s_agrupar_categorias_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_agrupar_edades_cython);
+  Py_CLEAR(clear_module_state->__pyx_n_s_append);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
   Py_CLEAR(clear_module_state->__pyx_n_s_auction_times);
   Py_CLEAR(clear_module_state->__pyx_n_s_binary_matrix);
@@ -2518,7 +2544,9 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_category_to_index);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
   Py_CLEAR(clear_module_state->__pyx_n_s_col);
+  Py_CLEAR(clear_module_state->__pyx_n_s_col_idx);
   Py_CLEAR(clear_module_state->__pyx_n_s_columns_to_exclude);
+  Py_CLEAR(clear_module_state->__pyx_n_s_current_matrix);
   Py_CLEAR(clear_module_state->__pyx_n_s_current_value);
   Py_CLEAR(clear_module_state->__pyx_n_s_custom_one_hot_encoder_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_data);
@@ -2526,6 +2554,8 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_delimiter);
   Py_CLEAR(clear_module_state->__pyx_n_s_edad);
   Py_CLEAR(clear_module_state->__pyx_n_s_edades);
+  Py_CLEAR(clear_module_state->__pyx_n_s_existing_columns);
+  Py_CLEAR(clear_module_state->__pyx_n_s_expand_action_list_0_cython);
   Py_CLEAR(clear_module_state->__pyx_n_s_fest_day);
   Py_CLEAR(clear_module_state->__pyx_n_s_fest_month);
   Py_CLEAR(clear_module_state->__pyx_n_s_festividades);
@@ -2595,11 +2625,13 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple__17);
   Py_CLEAR(clear_module_state->__pyx_tuple__19);
   Py_CLEAR(clear_module_state->__pyx_tuple__21);
+  Py_CLEAR(clear_module_state->__pyx_tuple__23);
   Py_CLEAR(clear_module_state->__pyx_codeobj__13);
   Py_CLEAR(clear_module_state->__pyx_codeobj__15);
   Py_CLEAR(clear_module_state->__pyx_codeobj__18);
   Py_CLEAR(clear_module_state->__pyx_codeobj__20);
   Py_CLEAR(clear_module_state->__pyx_codeobj__22);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__24);
   return 0;
 }
 #endif
@@ -2624,10 +2656,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_NaN);
   Py_VISIT(traverse_module_state->__pyx_n_s_Otro);
   Py_VISIT(traverse_module_state->__pyx_n_s__16);
-  Py_VISIT(traverse_module_state->__pyx_n_s__23);
+  Py_VISIT(traverse_module_state->__pyx_n_s__25);
+  Py_VISIT(traverse_module_state->__pyx_n_s_action_list_0);
   Py_VISIT(traverse_module_state->__pyx_n_s_age_groups);
   Py_VISIT(traverse_module_state->__pyx_n_s_agrupar_categorias_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_agrupar_edades_cython);
+  Py_VISIT(traverse_module_state->__pyx_n_s_append);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
   Py_VISIT(traverse_module_state->__pyx_n_s_auction_times);
   Py_VISIT(traverse_module_state->__pyx_n_s_binary_matrix);
@@ -2640,7 +2674,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_category_to_index);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
   Py_VISIT(traverse_module_state->__pyx_n_s_col);
+  Py_VISIT(traverse_module_state->__pyx_n_s_col_idx);
   Py_VISIT(traverse_module_state->__pyx_n_s_columns_to_exclude);
+  Py_VISIT(traverse_module_state->__pyx_n_s_current_matrix);
   Py_VISIT(traverse_module_state->__pyx_n_s_current_value);
   Py_VISIT(traverse_module_state->__pyx_n_s_custom_one_hot_encoder_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_data);
@@ -2648,6 +2684,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_delimiter);
   Py_VISIT(traverse_module_state->__pyx_n_s_edad);
   Py_VISIT(traverse_module_state->__pyx_n_s_edades);
+  Py_VISIT(traverse_module_state->__pyx_n_s_existing_columns);
+  Py_VISIT(traverse_module_state->__pyx_n_s_expand_action_list_0_cython);
   Py_VISIT(traverse_module_state->__pyx_n_s_fest_day);
   Py_VISIT(traverse_module_state->__pyx_n_s_fest_month);
   Py_VISIT(traverse_module_state->__pyx_n_s_festividades);
@@ -2717,11 +2755,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple__17);
   Py_VISIT(traverse_module_state->__pyx_tuple__19);
   Py_VISIT(traverse_module_state->__pyx_tuple__21);
+  Py_VISIT(traverse_module_state->__pyx_tuple__23);
   Py_VISIT(traverse_module_state->__pyx_codeobj__13);
   Py_VISIT(traverse_module_state->__pyx_codeobj__15);
   Py_VISIT(traverse_module_state->__pyx_codeobj__18);
   Py_VISIT(traverse_module_state->__pyx_codeobj__20);
   Py_VISIT(traverse_module_state->__pyx_codeobj__22);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__24);
   return 0;
 }
 #endif
@@ -2760,10 +2800,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_NaN __pyx_mstate_global->__pyx_n_s_NaN
 #define __pyx_n_s_Otro __pyx_mstate_global->__pyx_n_s_Otro
 #define __pyx_n_s__16 __pyx_mstate_global->__pyx_n_s__16
-#define __pyx_n_s__23 __pyx_mstate_global->__pyx_n_s__23
+#define __pyx_n_s__25 __pyx_mstate_global->__pyx_n_s__25
+#define __pyx_n_s_action_list_0 __pyx_mstate_global->__pyx_n_s_action_list_0
 #define __pyx_n_s_age_groups __pyx_mstate_global->__pyx_n_s_age_groups
 #define __pyx_n_s_agrupar_categorias_cython __pyx_mstate_global->__pyx_n_s_agrupar_categorias_cython
 #define __pyx_n_s_agrupar_edades_cython __pyx_mstate_global->__pyx_n_s_agrupar_edades_cython
+#define __pyx_n_s_append __pyx_mstate_global->__pyx_n_s_append
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
 #define __pyx_n_s_auction_times __pyx_mstate_global->__pyx_n_s_auction_times
 #define __pyx_n_s_binary_matrix __pyx_mstate_global->__pyx_n_s_binary_matrix
@@ -2776,7 +2818,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_category_to_index __pyx_mstate_global->__pyx_n_s_category_to_index
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
 #define __pyx_n_s_col __pyx_mstate_global->__pyx_n_s_col
+#define __pyx_n_s_col_idx __pyx_mstate_global->__pyx_n_s_col_idx
 #define __pyx_n_s_columns_to_exclude __pyx_mstate_global->__pyx_n_s_columns_to_exclude
+#define __pyx_n_s_current_matrix __pyx_mstate_global->__pyx_n_s_current_matrix
 #define __pyx_n_s_current_value __pyx_mstate_global->__pyx_n_s_current_value
 #define __pyx_n_s_custom_one_hot_encoder_cython __pyx_mstate_global->__pyx_n_s_custom_one_hot_encoder_cython
 #define __pyx_n_s_data __pyx_mstate_global->__pyx_n_s_data
@@ -2784,6 +2828,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_delimiter __pyx_mstate_global->__pyx_n_s_delimiter
 #define __pyx_n_s_edad __pyx_mstate_global->__pyx_n_s_edad
 #define __pyx_n_s_edades __pyx_mstate_global->__pyx_n_s_edades
+#define __pyx_n_s_existing_columns __pyx_mstate_global->__pyx_n_s_existing_columns
+#define __pyx_n_s_expand_action_list_0_cython __pyx_mstate_global->__pyx_n_s_expand_action_list_0_cython
 #define __pyx_n_s_fest_day __pyx_mstate_global->__pyx_n_s_fest_day
 #define __pyx_n_s_fest_month __pyx_mstate_global->__pyx_n_s_fest_month
 #define __pyx_n_s_festividades __pyx_mstate_global->__pyx_n_s_festividades
@@ -2853,11 +2899,13 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple__17 __pyx_mstate_global->__pyx_tuple__17
 #define __pyx_tuple__19 __pyx_mstate_global->__pyx_tuple__19
 #define __pyx_tuple__21 __pyx_mstate_global->__pyx_tuple__21
+#define __pyx_tuple__23 __pyx_mstate_global->__pyx_tuple__23
 #define __pyx_codeobj__13 __pyx_mstate_global->__pyx_codeobj__13
 #define __pyx_codeobj__15 __pyx_mstate_global->__pyx_codeobj__15
 #define __pyx_codeobj__18 __pyx_mstate_global->__pyx_codeobj__18
 #define __pyx_codeobj__20 __pyx_mstate_global->__pyx_codeobj__20
 #define __pyx_codeobj__22 __pyx_mstate_global->__pyx_codeobj__22
+#define __pyx_codeobj__24 __pyx_mstate_global->__pyx_codeobj__24
 /* #### Code section: module_code ### */
 
 /* "tools.pyx":6
@@ -5308,6 +5356,8 @@ static PyObject *__pyx_pf_5tools_8agrupar_edades_cython(CYTHON_UNUSED PyObject *
  *             age_groups[i] = 5  # Personas Mayores (61-100)
  * 
  *     return age_groups             # <<<<<<<<<<<<<<
+ * 
+ * def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_age_groups);
@@ -5334,6 +5384,391 @@ static PyObject *__pyx_pf_5tools_8agrupar_edades_cython(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
+/* "tools.pyx":220
+ *     return age_groups
+ * 
+ * def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):             # <<<<<<<<<<<<<<
+ *     """
+ *     Expande la columna 'action_list_0' en valores nicos y marca con 1 las columnas existentes o las crea si es necesario.
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5tools_11expand_action_list_0_cython(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+); /*proto*/
+PyDoc_STRVAR(__pyx_doc_5tools_10expand_action_list_0_cython, "\n    Expande la columna 'action_list_0' en valores \303\272nicos y marca con 1 las columnas existentes o las crea si es necesario.\n    \n    Par\303\241metros:\n    - action_list_0 (list): Lista con los valores de 'action_list_0'.\n    - existing_columns (list): Lista de nombres de columnas que ya existen en el DataFrame.\n    - current_matrix (list of lists): Matriz actual que representa las columnas del DataFrame.\n\n    Retorna:\n    - updated_matrix (list of lists): Matriz actualizada con las columnas de valores \303\272nicos de 'action_list_0'.\n    ");
+static PyMethodDef __pyx_mdef_5tools_11expand_action_list_0_cython = {"expand_action_list_0_cython", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_5tools_11expand_action_list_0_cython, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_5tools_10expand_action_list_0_cython};
+static PyObject *__pyx_pw_5tools_11expand_action_list_0_cython(PyObject *__pyx_self, 
+#if CYTHON_METH_FASTCALL
+PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
+#else
+PyObject *__pyx_args, PyObject *__pyx_kwds
+#endif
+) {
+  PyObject *__pyx_v_action_list_0 = 0;
+  PyObject *__pyx_v_existing_columns = 0;
+  PyObject *__pyx_v_current_matrix = 0;
+  #if !CYTHON_METH_FASTCALL
+  CYTHON_UNUSED Py_ssize_t __pyx_nargs;
+  #endif
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject* values[3] = {0,0,0};
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("expand_action_list_0_cython (wrapper)", 0);
+  #if !CYTHON_METH_FASTCALL
+  #if CYTHON_ASSUME_SAFE_MACROS
+  __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
+  #else
+  __pyx_nargs = PyTuple_Size(__pyx_args); if (unlikely(__pyx_nargs < 0)) return NULL;
+  #endif
+  #endif
+  __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
+  {
+    PyObject **__pyx_pyargnames[] = {&__pyx_n_s_action_list_0,&__pyx_n_s_existing_columns,&__pyx_n_s_current_matrix,0};
+    if (__pyx_kwds) {
+      Py_ssize_t kw_args;
+      switch (__pyx_nargs) {
+        case  3: values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = __Pyx_NumKwargs_FASTCALL(__pyx_kwds);
+      switch (__pyx_nargs) {
+        case  0:
+        if (likely((values[0] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_action_list_0)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L3_error)
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_existing_columns)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("expand_action_list_0_cython", 1, 3, 3, 1); __PYX_ERR(0, 220, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_current_matrix)) != 0)) {
+          (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
+          kw_args--;
+        }
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 220, __pyx_L3_error)
+        else {
+          __Pyx_RaiseArgtupleInvalid("expand_action_list_0_cython", 1, 3, 3, 2); __PYX_ERR(0, 220, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        const Py_ssize_t kwd_pos_args = __pyx_nargs;
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "expand_action_list_0_cython") < 0)) __PYX_ERR(0, 220, __pyx_L3_error)
+      }
+    } else if (unlikely(__pyx_nargs != 3)) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+      values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+    }
+    __pyx_v_action_list_0 = ((PyObject*)values[0]);
+    __pyx_v_existing_columns = ((PyObject*)values[1]);
+    __pyx_v_current_matrix = ((PyObject*)values[2]);
+  }
+  goto __pyx_L6_skip;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("expand_action_list_0_cython", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 220, __pyx_L3_error)
+  __pyx_L6_skip:;
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_AddTraceback("tools.expand_action_list_0_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_action_list_0), (&PyList_Type), 1, "action_list_0", 1))) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_existing_columns), (&PyList_Type), 1, "existing_columns", 1))) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_current_matrix), (&PyList_Type), 1, "current_matrix", 1))) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_r = __pyx_pf_5tools_10expand_action_list_0_cython(__pyx_self, __pyx_v_action_list_0, __pyx_v_existing_columns, __pyx_v_current_matrix);
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __pyx_r = NULL;
+  __pyx_L0:;
+  {
+    Py_ssize_t __pyx_temp;
+    for (__pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
+      __Pyx_Arg_XDECREF_FASTCALL(values[__pyx_temp]);
+    }
+  }
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5tools_10expand_action_list_0_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_action_list_0, PyObject *__pyx_v_existing_columns, PyObject *__pyx_v_current_matrix) {
+  int __pyx_v_num_rows;
+  CYTHON_UNUSED int __pyx_v_num_columns;
+  int __pyx_v_i;
+  PyObject *__pyx_v_value = 0;
+  PyObject *__pyx_v_col_idx = NULL;
+  PyObject *__pyx_v_row = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
+  Py_ssize_t __pyx_t_9;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("expand_action_list_0_cython", 1);
+
+  /* "tools.pyx":232
+ *     - updated_matrix (list of lists): Matriz actualizada con las columnas de valores nicos de 'action_list_0'.
+ *     """
+ *     cdef int num_rows = len(action_list_0)             # <<<<<<<<<<<<<<
+ *     cdef int num_columns = len(existing_columns)
+ *     cdef int i, j
+ */
+  if (unlikely(__pyx_v_action_list_0 == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 232, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyList_GET_SIZE(__pyx_v_action_list_0); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_v_num_rows = __pyx_t_1;
+
+  /* "tools.pyx":233
+ *     """
+ *     cdef int num_rows = len(action_list_0)
+ *     cdef int num_columns = len(existing_columns)             # <<<<<<<<<<<<<<
+ *     cdef int i, j
+ *     cdef str value
+ */
+  if (unlikely(__pyx_v_existing_columns == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 233, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyList_GET_SIZE(__pyx_v_existing_columns); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_v_num_columns = __pyx_t_1;
+
+  /* "tools.pyx":238
+ * 
+ *     # Iterar sobre las filas de 'action_list_0'
+ *     for i in range(num_rows):             # <<<<<<<<<<<<<<
+ *         value = action_list_0[i]
+ * 
+ */
+  __pyx_t_2 = __pyx_v_num_rows;
+  __pyx_t_3 = __pyx_t_2;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
+
+    /* "tools.pyx":239
+ *     # Iterar sobre las filas de 'action_list_0'
+ *     for i in range(num_rows):
+ *         value = action_list_0[i]             # <<<<<<<<<<<<<<
+ * 
+ *         if value in existing_columns:
+ */
+    if (unlikely(__pyx_v_action_list_0 == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 239, __pyx_L1_error)
+    }
+    if (!(likely(PyString_CheckExact(PyList_GET_ITEM(__pyx_v_action_list_0, __pyx_v_i)))||((PyList_GET_ITEM(__pyx_v_action_list_0, __pyx_v_i)) == Py_None) || __Pyx_RaiseUnexpectedTypeError("str", PyList_GET_ITEM(__pyx_v_action_list_0, __pyx_v_i)))) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_5 = PyList_GET_ITEM(__pyx_v_action_list_0, __pyx_v_i);
+    __Pyx_INCREF(__pyx_t_5);
+    __Pyx_XDECREF_SET(__pyx_v_value, ((PyObject*)__pyx_t_5));
+    __pyx_t_5 = 0;
+
+    /* "tools.pyx":241
+ *         value = action_list_0[i]
+ * 
+ *         if value in existing_columns:             # <<<<<<<<<<<<<<
+ *             # Buscar el ndice de la columna correspondiente
+ *             col_idx = existing_columns.index(value)
+ */
+    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_v_value, __pyx_v_existing_columns, Py_EQ)); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(0, 241, __pyx_L1_error)
+    if (__pyx_t_6) {
+
+      /* "tools.pyx":243
+ *         if value in existing_columns:
+ *             # Buscar el ndice de la columna correspondiente
+ *             col_idx = existing_columns.index(value)             # <<<<<<<<<<<<<<
+ *             current_matrix[i][col_idx] = 1  # Marcar con 1 si no est marcado
+ *         else:
+ */
+      __pyx_t_5 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyList_Type_index, __pyx_v_existing_columns, __pyx_v_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_XDECREF_SET(__pyx_v_col_idx, __pyx_t_5);
+      __pyx_t_5 = 0;
+
+      /* "tools.pyx":244
+ *             # Buscar el ndice de la columna correspondiente
+ *             col_idx = existing_columns.index(value)
+ *             current_matrix[i][col_idx] = 1  # Marcar con 1 si no est marcado             # <<<<<<<<<<<<<<
+ *         else:
+ *             # Agregar la nueva columna si no existe
+ */
+      if (unlikely(__pyx_v_current_matrix == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 244, __pyx_L1_error)
+      }
+      if (unlikely((PyObject_SetItem(PyList_GET_ITEM(__pyx_v_current_matrix, __pyx_v_i), __pyx_v_col_idx, __pyx_int_1) < 0))) __PYX_ERR(0, 244, __pyx_L1_error)
+
+      /* "tools.pyx":241
+ *         value = action_list_0[i]
+ * 
+ *         if value in existing_columns:             # <<<<<<<<<<<<<<
+ *             # Buscar el ndice de la columna correspondiente
+ *             col_idx = existing_columns.index(value)
+ */
+      goto __pyx_L5;
+    }
+
+    /* "tools.pyx":247
+ *         else:
+ *             # Agregar la nueva columna si no existe
+ *             existing_columns.append(value)             # <<<<<<<<<<<<<<
+ *             # Expandir la matriz con una nueva columna de 0s
+ *             for row in current_matrix:
+ */
+    /*else*/ {
+      if (unlikely(__pyx_v_existing_columns == Py_None)) {
+        PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
+        __PYX_ERR(0, 247, __pyx_L1_error)
+      }
+      __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_existing_columns, __pyx_v_value); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 247, __pyx_L1_error)
+
+      /* "tools.pyx":249
+ *             existing_columns.append(value)
+ *             # Expandir la matriz con una nueva columna de 0s
+ *             for row in current_matrix:             # <<<<<<<<<<<<<<
+ *                 row.append(0)
+ *             # Marcar la nueva columna en la fila correspondiente
+ */
+      if (unlikely(__pyx_v_current_matrix == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+        __PYX_ERR(0, 249, __pyx_L1_error)
+      }
+      __pyx_t_5 = __pyx_v_current_matrix; __Pyx_INCREF(__pyx_t_5);
+      __pyx_t_1 = 0;
+      for (;;) {
+        {
+          Py_ssize_t __pyx_temp = __Pyx_PyList_GET_SIZE(__pyx_t_5);
+          #if !CYTHON_ASSUME_SAFE_MACROS
+          if (unlikely((__pyx_temp < 0))) __PYX_ERR(0, 249, __pyx_L1_error)
+          #endif
+          if (__pyx_t_1 >= __pyx_temp) break;
+        }
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_8 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_1); __Pyx_INCREF(__pyx_t_8); __pyx_t_1++; if (unlikely((0 < 0))) __PYX_ERR(0, 249, __pyx_L1_error)
+        #else
+        __pyx_t_8 = __Pyx_PySequence_ITEM(__pyx_t_5, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 249, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        #endif
+        __Pyx_XDECREF_SET(__pyx_v_row, __pyx_t_8);
+        __pyx_t_8 = 0;
+
+        /* "tools.pyx":250
+ *             # Expandir la matriz con una nueva columna de 0s
+ *             for row in current_matrix:
+ *                 row.append(0)             # <<<<<<<<<<<<<<
+ *             # Marcar la nueva columna en la fila correspondiente
+ *             current_matrix[i][len(existing_columns) - 1] = 1
+ */
+        __pyx_t_7 = __Pyx_PyObject_Append(__pyx_v_row, __pyx_int_0); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 250, __pyx_L1_error)
+
+        /* "tools.pyx":249
+ *             existing_columns.append(value)
+ *             # Expandir la matriz con una nueva columna de 0s
+ *             for row in current_matrix:             # <<<<<<<<<<<<<<
+ *                 row.append(0)
+ *             # Marcar la nueva columna en la fila correspondiente
+ */
+      }
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+      /* "tools.pyx":252
+ *                 row.append(0)
+ *             # Marcar la nueva columna en la fila correspondiente
+ *             current_matrix[i][len(existing_columns) - 1] = 1             # <<<<<<<<<<<<<<
+ * 
+ *     return current_matrix
+ */
+      if (unlikely(__pyx_v_current_matrix == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+        __PYX_ERR(0, 252, __pyx_L1_error)
+      }
+      if (unlikely(__pyx_v_existing_columns == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+        __PYX_ERR(0, 252, __pyx_L1_error)
+      }
+      __pyx_t_1 = __Pyx_PyList_GET_SIZE(__pyx_v_existing_columns); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 252, __pyx_L1_error)
+      __pyx_t_9 = (__pyx_t_1 - 1);
+      if (unlikely((__Pyx_SetItemInt(PyList_GET_ITEM(__pyx_v_current_matrix, __pyx_v_i), __pyx_t_9, __pyx_int_1, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0) < 0))) __PYX_ERR(0, 252, __pyx_L1_error)
+    }
+    __pyx_L5:;
+  }
+
+  /* "tools.pyx":254
+ *             current_matrix[i][len(existing_columns) - 1] = 1
+ * 
+ *     return current_matrix             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_current_matrix);
+  __pyx_r = __pyx_v_current_matrix;
+  goto __pyx_L0;
+
+  /* "tools.pyx":220
+ *     return age_groups
+ * 
+ * def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):             # <<<<<<<<<<<<<<
+ *     """
+ *     Expande la columna 'action_list_0' en valores nicos y marca con 1 las columnas existentes o las crea si es necesario.
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_AddTraceback("tools.expand_action_list_0_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_value);
+  __Pyx_XDECREF(__pyx_v_col_idx);
+  __Pyx_XDECREF(__pyx_v_row);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -5354,10 +5789,12 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_NaN, __pyx_k_NaN, sizeof(__pyx_k_NaN), 0, 0, 1, 1},
     {&__pyx_n_s_Otro, __pyx_k_Otro, sizeof(__pyx_k_Otro), 0, 0, 1, 1},
     {&__pyx_n_s__16, __pyx_k__16, sizeof(__pyx_k__16), 0, 0, 1, 1},
-    {&__pyx_n_s__23, __pyx_k__23, sizeof(__pyx_k__23), 0, 0, 1, 1},
+    {&__pyx_n_s__25, __pyx_k__25, sizeof(__pyx_k__25), 0, 0, 1, 1},
+    {&__pyx_n_s_action_list_0, __pyx_k_action_list_0, sizeof(__pyx_k_action_list_0), 0, 0, 1, 1},
     {&__pyx_n_s_age_groups, __pyx_k_age_groups, sizeof(__pyx_k_age_groups), 0, 0, 1, 1},
     {&__pyx_n_s_agrupar_categorias_cython, __pyx_k_agrupar_categorias_cython, sizeof(__pyx_k_agrupar_categorias_cython), 0, 0, 1, 1},
     {&__pyx_n_s_agrupar_edades_cython, __pyx_k_agrupar_edades_cython, sizeof(__pyx_k_agrupar_edades_cython), 0, 0, 1, 1},
+    {&__pyx_n_s_append, __pyx_k_append, sizeof(__pyx_k_append), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
     {&__pyx_n_s_auction_times, __pyx_k_auction_times, sizeof(__pyx_k_auction_times), 0, 0, 1, 1},
     {&__pyx_n_s_binary_matrix, __pyx_k_binary_matrix, sizeof(__pyx_k_binary_matrix), 0, 0, 1, 1},
@@ -5370,7 +5807,9 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_category_to_index, __pyx_k_category_to_index, sizeof(__pyx_k_category_to_index), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
     {&__pyx_n_s_col, __pyx_k_col, sizeof(__pyx_k_col), 0, 0, 1, 1},
+    {&__pyx_n_s_col_idx, __pyx_k_col_idx, sizeof(__pyx_k_col_idx), 0, 0, 1, 1},
     {&__pyx_n_s_columns_to_exclude, __pyx_k_columns_to_exclude, sizeof(__pyx_k_columns_to_exclude), 0, 0, 1, 1},
+    {&__pyx_n_s_current_matrix, __pyx_k_current_matrix, sizeof(__pyx_k_current_matrix), 0, 0, 1, 1},
     {&__pyx_n_s_current_value, __pyx_k_current_value, sizeof(__pyx_k_current_value), 0, 0, 1, 1},
     {&__pyx_n_s_custom_one_hot_encoder_cython, __pyx_k_custom_one_hot_encoder_cython, sizeof(__pyx_k_custom_one_hot_encoder_cython), 0, 0, 1, 1},
     {&__pyx_n_s_data, __pyx_k_data, sizeof(__pyx_k_data), 0, 0, 1, 1},
@@ -5378,6 +5817,8 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_delimiter, __pyx_k_delimiter, sizeof(__pyx_k_delimiter), 0, 0, 1, 1},
     {&__pyx_n_s_edad, __pyx_k_edad, sizeof(__pyx_k_edad), 0, 0, 1, 1},
     {&__pyx_n_s_edades, __pyx_k_edades, sizeof(__pyx_k_edades), 0, 0, 1, 1},
+    {&__pyx_n_s_existing_columns, __pyx_k_existing_columns, sizeof(__pyx_k_existing_columns), 0, 0, 1, 1},
+    {&__pyx_n_s_expand_action_list_0_cython, __pyx_k_expand_action_list_0_cython, sizeof(__pyx_k_expand_action_list_0_cython), 0, 0, 1, 1},
     {&__pyx_n_s_fest_day, __pyx_k_fest_day, sizeof(__pyx_k_fest_day), 0, 0, 1, 1},
     {&__pyx_n_s_fest_month, __pyx_k_fest_month, sizeof(__pyx_k_fest_month), 0, 0, 1, 1},
     {&__pyx_n_s_festividades, __pyx_k_festividades, sizeof(__pyx_k_festividades), 0, 0, 1, 1},
@@ -5612,6 +6053,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
   __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tools_pyx, __pyx_n_s_agrupar_edades_cython, 187, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 187, __pyx_L1_error)
+
+  /* "tools.pyx":220
+ *     return age_groups
+ * 
+ * def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):             # <<<<<<<<<<<<<<
+ *     """
+ *     Expande la columna 'action_list_0' en valores nicos y marca con 1 las columnas existentes o las crea si es necesario.
+ */
+  __pyx_tuple__23 = PyTuple_Pack(10, __pyx_n_s_action_list_0, __pyx_n_s_existing_columns, __pyx_n_s_current_matrix, __pyx_n_s_num_rows, __pyx_n_s_num_columns, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_value, __pyx_n_s_col_idx, __pyx_n_s_row); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 10, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_tools_pyx, __pyx_n_s_expand_action_list_0_cython, 220, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6070,6 +6523,18 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5tools_9agrupar_edades_cython, 0, __pyx_n_s_agrupar_edades_cython, NULL, __pyx_n_s_tools, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_agrupar_edades_cython, __pyx_t_2) < 0) __PYX_ERR(0, 187, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "tools.pyx":220
+ *     return age_groups
+ * 
+ * def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):             # <<<<<<<<<<<<<<
+ *     """
+ *     Expande la columna 'action_list_0' en valores nicos y marca con 1 las columnas existentes o las crea si es necesario.
+ */
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5tools_11expand_action_list_0_cython, 0, __pyx_n_s_expand_action_list_0_cython, NULL, __pyx_n_s_tools, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_expand_action_list_0_cython, __pyx_t_2) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "tools.pyx":1
@@ -8048,6 +8513,53 @@ static CYTHON_INLINE int __Pyx_PyInt_BoolEqObjC(PyObject *op1, PyObject *op2, lo
     }
     return __Pyx_PyObject_IsTrueAndDecref(
         PyObject_RichCompare(op1, op2, Py_EQ));
+}
+
+/* PyObjectCall2Args */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call2Args(PyObject* function, PyObject* arg1, PyObject* arg2) {
+    PyObject *args[3] = {NULL, arg1, arg2};
+    return __Pyx_PyObject_FastCall(function, args+1, 2 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET);
+}
+
+/* PyObjectCallMethod1 */
+#if !(CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C00A2)
+static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
+    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
+    Py_DECREF(method);
+    return result;
+}
+#endif
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
+#if CYTHON_VECTORCALL && __PYX_LIMITED_VERSION_HEX >= 0x030C00A2
+    PyObject *args[2] = {obj, arg};
+    (void) __Pyx_PyObject_GetMethod;
+    (void) __Pyx_PyObject_CallOneArg;
+    (void) __Pyx_PyObject_Call2Args;
+    return PyObject_VectorcallMethod(method_name, args, 2 | PY_VECTORCALL_ARGUMENTS_OFFSET, NULL);
+#else
+    PyObject *method = NULL, *result;
+    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
+    if (likely(is_method)) {
+        result = __Pyx_PyObject_Call2Args(method, obj, arg);
+        Py_DECREF(method);
+        return result;
+    }
+    if (unlikely(!method)) return NULL;
+    return __Pyx__PyObject_CallMethod1(method, arg);
+#endif
+}
+
+/* append */
+static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x) {
+    if (likely(PyList_CheckExact(L))) {
+        if (unlikely(__Pyx_PyList_Append(L, x) < 0)) return -1;
+    } else {
+        PyObject* retval = __Pyx_PyObject_CallMethod1(L, __pyx_n_s_append, x);
+        if (unlikely(!retval))
+            return -1;
+        Py_DECREF(retval);
+    }
+    return 0;
 }
 
 /* FixUpExtensionType */
@@ -10087,7 +10599,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__23);
+        name = __Pyx_NewRef(__pyx_n_s__25);
     }
     return name;
 }

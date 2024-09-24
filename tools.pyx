@@ -216,3 +216,39 @@ def agrupar_edades_cython(list edades):
             age_groups[i] = 5  # Personas Mayores (61-100)
     
     return age_groups
+
+def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):
+    """
+    Expande la columna 'action_list_0' en valores únicos y marca con 1 las columnas existentes o las crea si es necesario.
+    
+    Parámetros:
+    - action_list_0 (list): Lista con los valores de 'action_list_0'.
+    - existing_columns (list): Lista de nombres de columnas que ya existen en el DataFrame.
+    - current_matrix (list of lists): Matriz actual que representa las columnas del DataFrame.
+
+    Retorna:
+    - updated_matrix (list of lists): Matriz actualizada con las columnas de valores únicos de 'action_list_0'.
+    """
+    cdef int num_rows = len(action_list_0)
+    cdef int num_columns = len(existing_columns)
+    cdef int i, j
+    cdef str value
+
+    # Iterar sobre las filas de 'action_list_0'
+    for i in range(num_rows):
+        value = action_list_0[i]
+        
+        if value in existing_columns:
+            # Buscar el índice de la columna correspondiente
+            col_idx = existing_columns.index(value)
+            current_matrix[i][col_idx] = 1  # Marcar con 1 si no está marcado
+        else:
+            # Agregar la nueva columna si no existe
+            existing_columns.append(value)
+            # Expandir la matriz con una nueva columna de 0s
+            for row in current_matrix:
+                row.append(0)
+            # Marcar la nueva columna en la fila correspondiente
+            current_matrix[i][len(existing_columns) - 1] = 1
+    
+    return current_matrix
