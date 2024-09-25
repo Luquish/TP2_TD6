@@ -1,20 +1,11 @@
 # tools.pyx
-# cython: boundscheck=False, wraparound=False, nonecheck=False, cdivision=True
+# cython: language_level=3, boundscheck=False, wraparound=False, nonecheck=False, cdivision=True
 
 from libc.time cimport time, strftime
 
-def agrupar_categorias_cython(list categorical_features, list columns_to_exclude, list data, int umbral=100):
+cpdef list agrupar_categorias_cython(list categorical_features, list columns_to_exclude, list data, int umbral=100):
     """
-    Agrupa categorías raras en 'Otro' y reemplaza NaN por 'Desconocido' usando Cython para mejorar el rendimiento.
-
-    Parámetros:
-    - categorical_features (list): Lista de nombres de columnas categóricas.
-    - columns_to_exclude (list): Lista de nombres de columnas a excluir.
-    - data (list of lists): Matriz de datos del DataFrame.
-    - umbral (int): Umbral para considerar una categoría como rara.
-
-    Retorna:
-    - data (list of lists): Matriz de datos modificada.
+    Agrupa categorías raras en 'Otro' y reemplaza None por 'Desconocido' usando Cython para mejorar el rendimiento.
     """
     cdef int col, row
     cdef int n_cols = len(categorical_features)
@@ -38,17 +29,17 @@ def agrupar_categorias_cython(list categorical_features, list columns_to_exclude
                 else:
                     frecuencia[category] = 1
             else:
-                # Contar NaN como una categoría especial
-                if 'NaN' in frecuencia:
-                    frecuencia['NaN'] += 1
+                # Contar None como una categoría especial
+                if 'None' in frecuencia:
+                    frecuencia['None'] += 1
                 else:
-                    frecuencia['NaN'] = 1
+                    frecuencia['None'] = 1
 
         # Identificar categorías raras (frecuencia < umbral)
-        categorias_pequenas = [key for key, value in frecuencia.items() if value < umbral and key != 'NaN']
+        categorias_pequenas = [key for key, value in frecuencia.items() if value < umbral and key != 'None']
         categorias_set = set(categorias_pequenas)
 
-        # Reemplazar categorías pequeñas y NaN
+        # Reemplazar categorías pequeñas y None
         for row in range(n_rows):
             category = data[row][col]
             if category in categorias_set:
@@ -58,17 +49,9 @@ def agrupar_categorias_cython(list categorical_features, list columns_to_exclude
 
     return data
 
-def custom_one_hot_encoder_cython(list data, int delimiter=124):
+cpdef tuple custom_one_hot_encoder_cython(list data, int delimiter=124):
     """
     Codifica los datos de lista en formato one-hot.
-    
-    Parámetros:
-    - data (list of lists): Matriz de datos.
-    - delimiter (int): Delimitador para las categorías (por defecto es '|' ASCII 124).
-    
-    Retorna:
-    - unique_categories (list): Lista de categorías únicas.
-    - binary_matrix (list of lists): Matriz binaria one-hot.
     """
     cdef int i, j
     cdef int n_rows = len(data)
@@ -111,97 +94,18 @@ def custom_one_hot_encoder_cython(list data, int delimiter=124):
 
     return unique_categories, binary_matrix
 
-def boolean_features_ohe_cython(list list_data, list unique_values):
-    """
-    Optimiza el one-hot encoding de listas de datos con Cython.
-    
-    Parámetros:
-    - list_data (list of lists): Listas de datos de las columnas a procesar.
-    - unique_values (list): Lista de valores únicos para el one-hot encoding.
-
-    Retorna:
-    - ohe_result (list of lists): Lista de listas con el resultado del one-hot encoding.
-    """
-    cdef int num_rows = len(list_data[0])  # Número de filas
-    cdef int num_columns = len(list_data)  # Número de columnas
-    
-    # Crear una lista de resultados con ceros
-    cdef list ohe_result = [[0] * len(unique_values) for _ in range(num_rows)]
-    cdef int i, j, k
-    
-    # Iterar sobre las filas
-    for i in range(num_rows):
-        for j in range(num_columns):
-            current_value = list_data[j][i]
-            if current_value in unique_values:
-                # Marcar la posición correspondiente como 1
-                k = unique_values.index(current_value)
-                ohe_result[i][k] = 1
-    
-    return ohe_result
-
-def verificar_festividades_cython(list auction_times):
-    """
-    Verifica si una lista de fechas de subastas está cerca de una festividad importante sin utilizar pandas.
-    
-    Parámetros:
-    - auction_times (list): Lista de fechas de subasta como tuplas de formato (año, mes, día).
-
-    Retorna:
-    - (list): Lista de 1 o 0 indicando si la fecha está cerca de una festividad importante.
-    """
-    cdef int n = len(auction_times)
-    cdef int i, year, month, day
-    cdef list resultado = [0] * n
-
-    # Definir las festividades globales
-    cdef list festividades = [
-        (12, 25),  # Navidad
-        (12, 31),  # Fin de Año
-        (1, 6),    # Reyes Magos
-        (2, 14),   # San Valentín
-        (11, 29),  # Black Friday
-        (12, 2),   # Cyber Monday
-        (10, 31),  # Halloween
-        (4, 1),    # Pascua ajustada
-        (5, 12),   # Día de la Madre
-        (6, 16),   # Día del Padre
-        (8, 11)    # Día del Niño
-    ]
-
-    for i in range(n):
-        year, month, day = auction_times[i]
-
-        for fest_month, fest_day in festividades:
-            # Verificar si la subasta está dentro de los 10 días previos a la festividad
-            if month == fest_month and (fest_day - 10) <= day <= fest_day:
-                resultado[i] = 1
-                break  # Salimos del loop al encontrar una festividad cercana
-            # Caso especial para Reyes Magos (enero después de diciembre)
-            elif month == 12 and fest_month == 1 and day >= 22:
-                resultado[i] = 1
-                break
-
-    return resultado
-
-def agrupar_edades_cython(list edades):
+cpdef list agrupar_edades_cython(list edades):
     """
     Agrupa las edades en rangos numéricos para mejorar la predicción usando Cython.
-
-    Parámetros:
-    - edades (list): Lista de edades.
-
-    Retorna:
-    - age_groups (list): Lista con los rangos de edad.
     """
     cdef int n = len(edades)
     cdef int i
     cdef float edad
     cdef list age_groups = [0] * n
-    
+
     for i in range(n):
         edad = edades[i]
-        
+
         if edad < 0 or edad > 100:
             age_groups[i] = 0  # Atípico
         elif 0 <= edad <= 18:
@@ -214,20 +118,12 @@ def agrupar_edades_cython(list edades):
             age_groups[i] = 4  # Adultos Mayores
         else:
             age_groups[i] = 5  # Personas Mayores (61-100)
-    
+
     return age_groups
 
-def expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):
+cpdef list expand_action_list_0_cython(list action_list_0, list existing_columns, list current_matrix):
     """
     Expande la columna 'action_list_0' en valores únicos y marca con 1 las columnas existentes o las crea si es necesario.
-    
-    Parámetros:
-    - action_list_0 (list): Lista con los valores de 'action_list_0'.
-    - existing_columns (list): Lista de nombres de columnas que ya existen en el DataFrame.
-    - current_matrix (list of lists): Matriz actual que representa las columnas del DataFrame.
-
-    Retorna:
-    - updated_matrix (list of lists): Matriz actualizada con las columnas de valores únicos de 'action_list_0'.
     """
     cdef int num_rows = len(action_list_0)
     cdef int num_columns = len(existing_columns)
@@ -237,7 +133,7 @@ def expand_action_list_0_cython(list action_list_0, list existing_columns, list 
     # Iterar sobre las filas de 'action_list_0'
     for i in range(num_rows):
         value = action_list_0[i]
-        
+
         if value in existing_columns:
             # Buscar el índice de la columna correspondiente
             col_idx = existing_columns.index(value)
@@ -250,5 +146,39 @@ def expand_action_list_0_cython(list action_list_0, list existing_columns, list 
                 row.append(0)
             # Marcar la nueva columna en la fila correspondiente
             current_matrix[i][len(existing_columns) - 1] = 1
-    
+
     return current_matrix
+
+cpdef list boolean_features_ohe_cython(list list_data, list unique_values):
+    """
+    Función de codificación one-hot personalizada que maneja valores de tipo string.
+    
+    Parámetros:
+    - list_data (list of lists): Lista de columnas a codificar, donde cada columna es una lista de valores.
+    - unique_values (list): Lista de valores únicos para crear las columnas de OHE.
+    
+    Retorna:
+    - ohe_result (list of lists): Lista de filas codificadas en one-hot.
+    """
+    cdef int num_rows = len(list_data[0])
+    cdef int num_unique = len(unique_values)
+    cdef list ohe_result = []
+    cdef int i, j
+    cdef object current_value
+
+    # Crear un diccionario para mapear unique_values a índices para una búsqueda más rápida
+    cdef dict unique_map = {}
+    for j in range(num_unique):
+        unique_map[unique_values[j]] = j
+
+    # Inicializar una lista de listas con ceros
+    ohe_result = [ [0] * num_unique for _ in range(num_rows) ]
+
+    # Iterar sobre cada columna y cada fila para establecer los valores de OHE
+    for j in range(len(list_data)):
+        for i in range(num_rows):
+            current_value = list_data[j][i]
+            if current_value in unique_map:
+                ohe_result[i][unique_map[current_value]] = 1
+
+    return ohe_result
