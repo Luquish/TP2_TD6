@@ -3,10 +3,24 @@
 
 from libc.time cimport time, strftime
 
-cpdef list agrupar_categorias_cython(list categorical_features, list columns_to_exclude, list data, int umbral=100):
+cpdef list agrupar_categorias_cython(list categorical_features, list data, int umbral=100):
     """
-    Agrupa categorías raras en 'Otro' y reemplaza None por 'Desconocido' usando Cython para mejorar el rendimiento.
+    Agrupa categorías raras en 'Otro' usando Cython para mejorar el rendimiento.
+    No modifica los valores desconocidos (None).
+    Si umbral <= 0, retorna los datos sin modificaciones.
+    
+    Parámetros:
+    - categorical_features (list): Lista de nombres de columnas categóricas a procesar.
+    - data (list of lists): Conjunto de datos donde cada sublista representa una fila.
+    - umbral (int): Umbral de frecuencia para considerar una categoría como rara.
+    
+    Retorna:
+    - data (list of lists): Conjunto de datos modificado.
     """
+    # Si el umbral no es mayor a 0, retornar los datos sin modificaciones
+    if umbral <= 0:
+        return data
+
     cdef int col, row
     cdef int n_cols = len(categorical_features)
     cdef int n_rows = len(data)
@@ -15,7 +29,6 @@ cpdef list agrupar_categorias_cython(list categorical_features, list columns_to_
     cdef list categorias_pequenas
     cdef set categorias_set
     cdef object valor_pequeno = 'Otro'
-    cdef object valor_desconocido = 'Desconocido'
 
     for col in range(n_cols):
         frecuencia = {}
@@ -29,25 +42,22 @@ cpdef list agrupar_categorias_cython(list categorical_features, list columns_to_
                 else:
                     frecuencia[category] = 1
             else:
-                # Contar None como una categoría especial
-                if 'None' in frecuencia:
-                    frecuencia['None'] += 1
-                else:
-                    frecuencia['None'] = 1
+                # No contar 'None' para evitar reemplazo
+                pass
 
         # Identificar categorías raras (frecuencia < umbral)
-        categorias_pequenas = [key for key, value in frecuencia.items() if value < umbral and key != 'None']
+        categorias_pequenas = [key for key, value in frecuencia.items() if value < umbral]
         categorias_set = set(categorias_pequenas)
 
-        # Reemplazar categorías pequeñas y None
+        # Reemplazar únicamente categorías pequeñas
         for row in range(n_rows):
             category = data[row][col]
             if category in categorias_set:
                 data[row][col] = valor_pequeno
-            elif category is None:
-                data[row][col] = valor_desconocido
+            # No modificar 'None'
 
     return data
+
 
 cpdef tuple custom_one_hot_encoder_cython(list data, int delimiter=124):
     """
